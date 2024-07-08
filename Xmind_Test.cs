@@ -219,15 +219,14 @@ namespace xmind1_project
         {
             // Arrange
             var xmind = GetDefaultXmind();
-            var expectedOrder = new List<string>() { "Main Topic 1", "Main Topic 2", "Main Topic 3", "Main Topic 4", "Main Topic 5" };
-
+            var expectedOrder = new List<string?>() { "Main Topic 1", "Main Topic 2", "Main Topic 3", "Main Topic 4", "Main Topic 5" };
             // Act
-            XmindService.CreateMainTopic(xmind, 1); // Add one main topic
-
-            // Assert
+            XmindService.CreateMainTopic(xmind, 1); 
+                                                   
             var actualOrder = xmind.GetChildren().Select(topic => topic.Name).ToList();
             Assert.Equal(expectedOrder, actualOrder);
         }
+
 
         [Fact]
         public void Export_ShouldSetIsExportedToTrue()
