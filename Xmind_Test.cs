@@ -1,3 +1,5 @@
+using ClassLibrary1;
+
 namespace xmind1_project
 {
     public class Xmind_Test
