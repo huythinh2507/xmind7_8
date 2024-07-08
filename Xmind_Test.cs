@@ -223,6 +223,17 @@ namespace xmind1_project
             // Assert
             Assert.Equal(c, d);
         }
-        
+        [Fact]
+        public void Test2()
+        {
+            // Arrange
+            var a = 1;
+            var b = 2;
+            var c = 3;
+            var d = a + b;
+
+            // Assert
+            Assert.Equal(c, d);
+        }
     }
 }
