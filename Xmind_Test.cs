@@ -1,4 +1,5 @@
 namespace xmind1_project
+
 {
     public class Xmind_Test
     {
@@ -36,7 +37,7 @@ namespace xmind1_project
             XmindService.CreateFloatingTopic(xmind, 1);
 
             // Assert that there is one floating topic
-            Assert.Equal(1, xmind.children.Count(topic => topic.Type == new Constants()._FloatingTopic));
+            Assert.Equal(1, xmind.Children.Count(topic => topic.Type == new Constants()._FloatingTopic));
         }
 
         [Fact]
@@ -74,7 +75,7 @@ namespace xmind1_project
             var xmind = GetDefaultXmind();
             XmindService.DeleteTopic(xmind, topic_ids_to_be_removed); // Remove the square brackets around 3
 
-            var deleted_topic = xmind.children.Find(i => i.ID == 3);
+            var deleted_topic = xmind.Children.Find(i => i.ID == 3);
             Assert.Null(deleted_topic);
         }
 
@@ -85,7 +86,7 @@ namespace xmind1_project
             var xmind = GetDefaultXmind();
             XmindService.DeleteTopic(xmind, topic_ids_to_be_removed);
 
-            var remainingTopics = xmind.children.FindAll(topic => topic_ids_to_be_removed.Contains(topic.ID));
+            var remainingTopics = xmind.Children.FindAll(topic => topic_ids_to_be_removed.Contains(topic.ID));
             Assert.Empty(remainingTopics);
         }
 
