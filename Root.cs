@@ -7,11 +7,11 @@
         public Sheet Sheet { get; set; }
 
 
-        public BaseNode basenode;
+        public BaseNode basenode { get; internal set; }
 
         public Root(string title)
         {
-            children = new List<Children> { };
+            children = [];
             Sheet = new Sheet();
         }
 
@@ -31,12 +31,12 @@
             sheet.Title = newsheetname;
         }
 
-        public bool Export(Sheet sheet)
+        public static bool Export(Sheet sheet)
         {
             sheet.IsExported = true;
             return true;
         }
-        public bool Save(Sheet sheet)
+        public static bool Save(Sheet sheet)
         {
             sheet.IsSaved = true;
             return true;

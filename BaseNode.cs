@@ -16,7 +16,7 @@
         }
 
         private Guid Id { get; set; }
-        public Position Position { get; set; }
+        public Position Position { get; set; } = new Position(0, 0);
         public string Title { get; set; } = string.Empty;
         private double Width { get; set; }
         private double Height { get; set; }
@@ -49,21 +49,21 @@
             return Width;
         }
 
-        public void SetHeight(Children topic, double x)
+        public static void SetHeight(Children topic, double x)
         {
             topic.Height = x;
         }
 
-        public void SetHeight(Root _root, double x)
+        public static void SetHeight(Root _root, double x)
         {
             _root.Height = x;
         }
-        public void SetWidth(Children topic, double x)
+        public static void SetWidth(Children topic, double x)
         {
             topic.Width = x;
         }
 
-        public void SetWidth(Root _root, double x)
+        public static void SetWidth(Root _root, double x)
         {
             _root.Width = x;
         }

@@ -2,16 +2,16 @@ namespace xmind1_project
 {
     public class Xmind_Test
     {
-        public Root GetDefaultXmind()
+        public static Root GetDefaultXmind()
         {
-            var xmind = new XmindService().CreateDefaultXmind();
+            var xmind = XmindService.CreateDefaultXmind();
             return xmind;
         }
 
-        private Root AddRelationship(int startID, int endID)
+        private static Root AddRelationship(int startID, int endID)
         {
             var xmind = GetDefaultXmind();
-            new XmindService().Connect(xmind, startID, endID);
+            XmindService.Connect(xmind, startID, endID);
             return xmind;
         }
 
@@ -34,7 +34,7 @@ namespace xmind1_project
         public void Test_Create_Floating_Topics()
         {
             var xmind = GetDefaultXmind();
-            new XmindService().CreateFloatingTopic(xmind, 1);
+            XmindService.CreateFloatingTopic(xmind, 1);
 
             // Assert that there is one floating topic
             Assert.Equal(1, xmind.children.Count(topic => topic.Type == new Constants()._FloatingTopic));
@@ -46,7 +46,7 @@ namespace xmind1_project
             //create 4 default topics + 3 more main topics
             var number_of_topics_to_be_created = 3;
             var xmind = GetDefaultXmind();
-            new XmindService().CreateMainTopic(xmind, number_of_topics_to_be_created);
+            XmindService.CreateMainTopic(xmind, number_of_topics_to_be_created);
             //count number of total topics
             var number_of_total_topics = xmind.GetChildren().Count;
             //shoudl be 4 + 3
@@ -59,7 +59,7 @@ namespace xmind1_project
             //create 4 default topics + 3 more main topics
             var number_of_topics_to_be_created = 3;
             var xmind = GetDefaultXmind();
-            new XmindService().CreateMainTopic(xmind, number_of_topics_to_be_created);
+            XmindService.CreateMainTopic(xmind, number_of_topics_to_be_created);
 
 
             //get name of the 7th topic
@@ -71,9 +71,9 @@ namespace xmind1_project
         [Fact]
         public void Test_Delete_Topic()
         {
-            List<int> topic_ids_to_be_removed = new List<int> { 3 };
+            List<int> topic_ids_to_be_removed = [3];
             var xmind = GetDefaultXmind();
-            new XmindService().DeleteTopic(xmind, topic_ids_to_be_removed); // Remove the square brackets around 3
+            XmindService.DeleteTopic(xmind, topic_ids_to_be_removed); // Remove the square brackets around 3
 
             var deleted_topic = xmind.children.Find(i => i.ID == 3);
             Assert.Null(deleted_topic);
@@ -84,10 +84,10 @@ namespace xmind1_project
         {
             List<int> topic_ids_to_be_removed = new List<int> { 1, 3 }; // Corrected the list initialization
             var xmind = GetDefaultXmind();
-            new XmindService().DeleteTopic(xmind, topic_ids_to_be_removed);
+            XmindService.DeleteTopic(xmind, topic_ids_to_be_removed);
 
             var remainingTopics = xmind.children.FindAll(topic => topic_ids_to_be_removed.Contains(topic.ID));
-            Assert.Equal(0, remainingTopics.Count);
+            Assert.Empty(remainingTopics);
         }
 
 
@@ -121,7 +121,7 @@ namespace xmind1_project
             var newname = "new name";
             Guid ID = xmind.GetRelationship()[0].id;
 
-            new XmindService().ChangeRelationShipName(xmind, ID, newname);
+            XmindService.ChangeRelationShipName(xmind, ID, newname);
 
             Assert.Equal(newname, xmind.GetRelationship()[0].title);
         }
@@ -131,7 +131,7 @@ namespace xmind1_project
         {
             var xmind = GetDefaultXmind();
             var main_topic_1 = xmind.GetChildren()[0];
-            new XmindService().CreateSubTopic(main_topic_1, 3);
+            XmindService.CreateSubTopic(main_topic_1, 3);
 
             Assert.NotNull(main_topic_1);
         }
@@ -141,7 +141,7 @@ namespace xmind1_project
         {
             var xmind = GetDefaultXmind();
             var main_topic_1 = xmind.GetChildren()[0];
-            new XmindService().CreateSubTopic(main_topic_1, 3);
+            XmindService.CreateSubTopic(main_topic_1, 3);
             //count children of subtopic
             var count = main_topic_1.GetChildren().Count;
             Assert.Equal(3, count);
@@ -177,7 +177,7 @@ namespace xmind1_project
             var expectedOrder = new List<string>() { "Main Topic 1", "Main Topic 2", "Main Topic 3", "Main Topic 4", "Main Topic 5" };
 
             // Act
-            new XmindService().CreateMainTopic(xmind, 1); // Add one main topic
+            XmindService.CreateMainTopic(xmind, 1); // Add one main topic
 
             // Assert
             var actualOrder = xmind.GetChildren().Select(topic => topic.Title).ToList();
@@ -192,7 +192,7 @@ namespace xmind1_project
             var sheet = xmind.GetSheet();
 
             // Act
-            xmind.Export(sheet);
+            Root.Export(sheet);
 
             // Assert
             Assert.True(sheet.IsExported);
@@ -206,34 +206,11 @@ namespace xmind1_project
             var sheet = xmind.GetSheet();
 
             // Act
-            xmind.Save(sheet);
+            Root.Save(sheet);
 
             // Assert
             Assert.True(sheet.IsSaved);
         }
-        [Fact]
-        public void Test()
-        {
-            // Arrange
-            var a = 1;
-            var b = 2;
-            var c = 3;
-            var d = a + b;
 
-            // Assert
-            Assert.Equal(c, d);
-        }
-        [Fact]
-        public void Test2()
-        {
-            // Arrange
-            var a = 1;
-            var b = 2;
-            var c = 3;
-            var d = a + b;
-
-            // Assert
-            Assert.Equal(c, d);
-        }
     }
 }
