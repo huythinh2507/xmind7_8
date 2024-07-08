@@ -3,15 +3,15 @@ namespace xmind1_project
 {
     public class Children 
     {
-        public List<Children> subtopic { get; internal set; } = [];
+        public List<Children> subtopic { get; internal set; }
        
 
         public int ID { get; internal set; }
-        public string Type { get; internal set; } 
-        public string Name { get; private set; } 
+        public string? Type { get; internal set; } 
+        public string? Name { get; private set; } 
         public double Height { get; internal set; }
         public double Width { get; internal set; }
-        public string Title { get; internal set; }
+        public  string? Title { get; internal set; }
         public Children()
         {
             subtopic = [];
