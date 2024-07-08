@@ -9,6 +9,6 @@
         public readonly string _RootTopic = "Root Topic";
         public readonly List<Children> _allChildren = [];
         public readonly List<Relationship> RelationshipList = [];
-        public Children _child = new();
+        public Children _child = new Children();
     }
 }

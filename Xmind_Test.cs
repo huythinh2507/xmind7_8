@@ -8,11 +8,10 @@ namespace xmind1_project
             return xmind;
         }
 
-        private static Root AddRelationship(int startID, int endID)
+        private static void CreateRelationship(int startID, int endID)
         {
             var xmind = GetDefaultXmind();
             XmindService.Connect(xmind, startID, endID);
-            return xmind;
         }
 
         [Fact]
@@ -63,7 +62,7 @@ namespace xmind1_project
 
 
             //get name of the 7th topic
-            var nameof_7th_topic = xmind.GetChildren()[6].Title;
+            var nameof_7th_topic = xmind.GetChildren()[6].Name;
 
             Assert.Equal($"{new Constants()._MainTopic} {7}", nameof_7th_topic);
         }
@@ -82,7 +81,7 @@ namespace xmind1_project
         [Fact]
         public void Test_Delete_Multi_Topics()
         {
-            List<int> topic_ids_to_be_removed = new List<int> { 1, 3 }; // Corrected the list initialization
+            List<int> topic_ids_to_be_removed = [1, 3]; // Corrected the list initialization
             var xmind = GetDefaultXmind();
             XmindService.DeleteTopic(xmind, topic_ids_to_be_removed);
 
@@ -90,24 +89,67 @@ namespace xmind1_project
             Assert.Empty(remainingTopics);
         }
 
+        [Fact]
+        public void Test_Change_Root_Name_Function()
+        {
+            var newname = "new name";
+            var xmind = GetDefaultXmind();
+            XmindService.ChangeRootName(xmind, newname);
+
+            
+            Assert.Equal(xmind.Title, newname);
+        }
+
+        [Fact]
+        public void Test_Change_Topic_Name_Function()
+        {
+            var newname = "new name";
+            var xmind = GetDefaultXmind();
+            XmindService.ChangeTopicName(xmind.GetChildren()[0], newname);
+
+
+            Assert.Equal(xmind.GetChildren()[0].Title, newname);
+        }
 
         [Fact]
         public void DoesRelationshipExist()
         {
+            var xmind = GetDefaultXmind();
             var startID = 1;
             var endID = 2;
-            var xmind = AddRelationship(startID, endID);
+            //create rela
+            XmindService.Connect(xmind, startID, endID);
 
             Assert.Equal(startID, xmind.GetRelationship()[0].StartID);
             Assert.Equal(endID, xmind.GetRelationship()[0].EndID);
         }
 
         [Fact]
-        public void DoesRelationshipTitleExist()
+        public void DeleteRelationship()
         {
+            
+            var xmind = GetDefaultXmind();
             var startID = 1;
             var endID = 2;
-            var xmind = AddRelationship(startID, endID);
+            //create rela
+            XmindService.Connect(xmind, startID, endID);
+            //get the first relationship
+            var relationship_id = xmind.RelationshipList[0].ID;
+            //delete it
+            XmindService.DeleteRelationship(xmind, relationship_id);
+
+            var deletedRelationship = xmind.RelationshipList.Find(b  => b.ID == relationship_id);
+            Assert.Null(deletedRelationship);
+        }
+
+        [Fact]
+        public void DoesRelationshipTitleExist()
+        {
+            var xmind = GetDefaultXmind();
+            var startID = 1;
+            var endID = 2;
+            //create rela
+            XmindService.Connect(xmind, startID, endID);
 
             Assert.Equal("", xmind.GetRelationship()[0].title);
         }
@@ -115,11 +157,14 @@ namespace xmind1_project
         [Fact]
         public void IsTitlechangeable()
         {
+            var xmind = GetDefaultXmind();
             var startID = 1;
             var endID = 2;
-            var xmind = AddRelationship(startID, endID);
+            //create rela
+            XmindService.Connect(xmind, startID, endID);
+            //set new name
             var newname = "new name";
-            Guid ID = xmind.GetRelationship()[0].id;
+            Guid ID = xmind.GetRelationship()[0].ID;
 
             XmindService.ChangeRelationShipName(xmind, ID, newname);
 
@@ -180,7 +225,7 @@ namespace xmind1_project
             XmindService.CreateMainTopic(xmind, 1); // Add one main topic
 
             // Assert
-            var actualOrder = xmind.GetChildren().Select(topic => topic.Title).ToList();
+            var actualOrder = xmind.GetChildren().Select(topic => topic.Name).ToList();
             Assert.Equal(expectedOrder, actualOrder);
         }
 
@@ -199,7 +244,7 @@ namespace xmind1_project
         }
 
         [Fact]
-        public void Export_ShouldSetIsSavedToTrue()
+        public void Save_ShouldSetIsSavedToTrue()
         {
             // Arrange
             var xmind = GetDefaultXmind();

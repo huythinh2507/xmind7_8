@@ -1,19 +1,21 @@
-﻿namespace xmind1_project
+﻿
+namespace xmind1_project
 {
-    public class Children : BaseNode
+    public class Children 
     {
-        public List<Children> _subtopic { get; internal set; } = new List<Children>();
-        public Children()
-        { }
-
-        public Children(string title) : base(title)
-        {
-            _subtopic = [];
-        }
+        public List<Children> subtopic { get; internal set; } = [];
+       
 
         public int ID { get; internal set; }
-        public string Type { get; internal set; } = new string("NULL");
-        public string Name { get; private set; } = "NULL";
+        public string Type { get; internal set; } 
+        public string Name { get; private set; } 
+        public double Height { get; internal set; }
+        public double Width { get; internal set; }
+        public string Title { get; internal set; }
+        public Children()
+        {
+            subtopic = [];
+        }
 
         public void SetID(int i)
         {
@@ -32,7 +34,17 @@
 
         public List<Children> GetChildren()
         {
-            return _subtopic;
+            return subtopic;
+        }
+
+        internal static void SetHeight(Children child, double v)
+        {
+            child.Height = v;
+        }
+
+        internal static void SetWidth(Children child, double v)
+        {
+            child.Width = v;
         }
     }
 }

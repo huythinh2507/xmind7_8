@@ -1,4 +1,8 @@
-﻿namespace xmind1_project
+﻿using Newtonsoft.Json.Linq;
+using NUnit.Framework.Constraints;
+using System.Net.WebSockets;
+
+namespace xmind1_project
 {
     public class XmindService
     {
@@ -44,19 +48,25 @@
         {
             var constants = new Constants();
             var existingTopicCount = xmind.children.Count;
+
             for (int i = 0; i < count; i++)
             {
-                int topicNumber = existingTopicCount + i + 1; // Calculate the unique topic number
-                constants._child = new Children($"{type} {topicNumber}");
-                constants._child.SetType(type);
-                BaseNode.SetHeight(constants._child, 1.0);
-                BaseNode.SetWidth(constants._child, 3.0);
-                constants._child.SetID(i);
-                constants._child.SetName(type);
-                constants._allChildren.Add(constants._child);
+                int topicNumber = existingTopicCount + i + 1; 
+                var name = $"{type} {topicNumber}"; 
+
+                var topic = new Children();
+                topic.SetType(type);
+                Children.SetHeight(topic, 1.0);
+                Children.SetWidth(topic, 3.0);
+                topic.SetID(i);
+                topic.SetName(name);
+
+                constants._allChildren.Add(topic);
             }
+
             return constants._allChildren;
         }
+
 
         public static Root DeleteTopic(Root xmind, List<int> idsToRemove)
         {
@@ -75,21 +85,20 @@
             var relationship = startNode?.ID != null && endNode?.ID != null
                 ? new Relationship("", startNode.ID, endNode.ID)
                 : null;
-
-            AddRelationship(xmind, relationship); 
+            if (relationship != null)
+            {
+                AddRelationship(xmind, relationship);
+            }
         }
-
-
-
 
         public static void AddRelationship(Root xmind, Relationship relationship)
         {
-            xmind.GetRelationship().Add(relationship);
+            xmind.RelationshipList.Add(relationship);
         }
 
         public static void ChangeRelationShipName(Root xmind, Guid ID, string newName)
         {
-            var relationship = xmind.GetRelationship().Find(b => b.id == ID);
+            var relationship = xmind.GetRelationship().Find(b => b.ID == ID);
             if (relationship != null)
             {
                 relationship.title = newName;
@@ -99,19 +108,43 @@
         public static Children CreateSubTopic(Children main_topic_1, int v)
         {
             var constants = new Constants();
-            var existingTopicCount = main_topic_1._subtopic.Count;
+            var existingTopicCount = main_topic_1.subtopic.Count;
             for (int i = 0; i < v; i++)
             {
                 int topicNumber = existingTopicCount + i + 1; // Calculate the unique topic number
-                constants._child = new Children($"{constants._SubTopic} {topicNumber}");
+                constants._child = new Children();
+                var name = $"{constants._SubTopic} {topicNumber}";
                 constants._child.SetType(constants._SubTopic);
-                BaseNode.SetHeight(constants._child, 1.0);
-                BaseNode.SetWidth(constants._child, 3.0);
+                Children.SetHeight(constants._child, 1.0);
+                Children.SetWidth(constants._child, 3.0);
                 constants._child.SetID(i);
-                constants._child.SetName(constants._SubTopic);
-                main_topic_1._subtopic.Add(constants._child);
+                constants._child.SetName(name);
+                main_topic_1.subtopic.Add(constants._child);
             }
             return main_topic_1;
         }
+
+        public static void ChangeRootName(Root xmind, string newname)
+        {
+            xmind.Title = newname;
+        }
+
+        public static void ChangeTopicName(Children children, string newname)
+        {
+            children.Title = newname;
+        }
+
+        public static void DeleteRelationship(Root xmind, Guid relationship_id1)
+        {
+            var List_of_rela = xmind.RelationshipList;
+
+            var rela_to_be_deleted = List_of_rela.Find(b => b.ID.Equals(relationship_id1));
+
+            if (rela_to_be_deleted != null)
+            {
+                List_of_rela.Remove(rela_to_be_deleted);
+            }
+        }
+
     }
 }

@@ -2,14 +2,14 @@
 {
     public class Relationship
     {
-        public Guid id;
+        public Guid ID;
         public int StartID;
         public int EndID;
         public string title;
 
         public Relationship(string title, int startId, int endId)
         {
-            id = Guid.NewGuid();
+            ID = Guid.NewGuid();
             this.title = title;
             this.EndID = endId;
             this.StartID = startId;
