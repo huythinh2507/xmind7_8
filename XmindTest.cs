@@ -2,7 +2,7 @@ using Xmind_Library;
 
 namespace xmind1_project
 {
-    public class Xmind_Test
+    public class XmindTest
     {
         //init default xmind
         public static Root GetDefaultXmind()
@@ -34,7 +34,7 @@ namespace xmind1_project
             var child = XmindService.GenerateTopics(xmind, parentID, "Floating Topic", numberOfNewFloatingTopics);
             XmindService.SetChildForRoot(xmind, child);
             // Assert that there is one floating topic
-            Assert.Equal(numberOfNewFloatingTopics, xmind.Topics.Count(topic => topic.Type == Constants.FloatingTopic));
+            Assert.Equal(numberOfNewFloatingTopics, xmind.Topics.Count(topic => topic.Type == XmindConstants.FloatingTopic));
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace xmind1_project
             //count number of total topics
             var totalTopics = xmind.GetChildren().Count;
             //shoudl be 4 + 3
-            Assert.Equal(numberOfTopicsToBeCreated + Constants.DefaultTopicNumber, totalTopics);
+            Assert.Equal(numberOfTopicsToBeCreated + XmindConstants.DefaultTopicNumber, totalTopics);
         }
 
         [Fact]
@@ -63,7 +63,7 @@ namespace xmind1_project
             //get name of the 7th topic
             var nameof_7th_topic = xmind.GetChildren()[6].Title;
 
-            Assert.Equal($"{Constants.MainTopic} {7}", nameof_7th_topic);
+            Assert.Equal($"{XmindConstants.MainTopic} {7}", nameof_7th_topic);
         }
 
         [Fact]
@@ -114,29 +114,34 @@ namespace xmind1_project
             Assert.Equal(xmind.GetChildren()[0].Title, newname);
         }
 
-
-
         [Fact]
-        public void Does_RelationshipExist()
+        public void Test_CreateRelationships()
         {
             var xmind = GetDefaultXmind();
-            var startID = xmind.Topics[0].ID;
-            var endID = xmind.Topics[1].ID;
-            //create rela
-            XmindService.Connect(xmind, startID, endID);
-
-            Assert.Equal(startID, xmind.GetRelationship()[0].StartID);
-            Assert.Equal(endID, xmind.GetRelationship()[0].EndID);
+            var startNode = xmind.Topics[0];
+            var endNode = xmind.Topics[1];
+            var endNode2 = xmind.Topics[2];
+            //create 1st rel
+            XmindService.CreateRelationship(xmind, startNode, endNode);
+            //create 2nd rel
+            XmindService.CreateRelationship(xmind, startNode, endNode2);
+            //assert there are 2 relationship
+            Assert.Equal(2, xmind.Relationships.Count);
+            //1st rel
+            Assert.Equal(startNode.ID, xmind.GetRelationship()[0].StartID);
+            Assert.Equal(endNode.ID, xmind.GetRelationship()[0].EndID);
+            //2nd rel
+            Assert.Equal(startNode.ID, xmind.GetRelationship()[1].StartID);
+            Assert.Equal(endNode2.ID, xmind.GetRelationship()[1].EndID);
         }
 
         [Fact]
         public void DeleteRelationship()
         {
             var xmind = GetDefaultXmind();
-            var startID = xmind.Topics[0].ID;
-            var endID = xmind.Topics[1].ID;
-            //create rela
-            XmindService.Connect(xmind, startID, endID);
+            var startNode = xmind.Topics[0];
+            var endNode = xmind.Topics[1];
+            XmindService.CreateRelationship(xmind, startNode, endNode);
             //get the first relationship
             var rel_id = xmind.Relationships[0].ID;
             //delete it
@@ -150,10 +155,9 @@ namespace xmind1_project
         public void DoesRelationshipTitleExist()
         {
             var xmind = GetDefaultXmind();
-            var startID = xmind.Topics[0].ID;
-            var endID = xmind.Topics[1].ID;
-            //create rela
-            XmindService.Connect(xmind, startID, endID);
+            var startNode = xmind.Topics[0];
+            var endNode = xmind.Topics[1];
+            XmindService.CreateRelationship(xmind, startNode, endNode);
 
             Assert.Equal("", xmind.GetRelationship()[0].Title);
         }
@@ -162,10 +166,9 @@ namespace xmind1_project
         public void IsTitlechangeable()
         {
             var xmind = GetDefaultXmind();
-            var startID = xmind.Topics[0].ID;
-            var endID = xmind.Topics[1].ID;
-            //create rela
-            XmindService.Connect(xmind, startID, endID);
+            var startNode = xmind.Topics[0];
+            var endNode = xmind.Topics[1];
+            XmindService.CreateRelationship(xmind, startNode, endNode);
             //set new name
             var newname = "new name";
             Guid ID = xmind.GetRelationship()[0].ID;
@@ -179,32 +182,31 @@ namespace xmind1_project
         public void Test_ChangeRelStartNode()
         {
             var xmind = GetDefaultXmind();
-            var startID = xmind.Topics[0].ID;
-            var endID = xmind.Topics[1].ID;
-            //create rela
-            XmindService.Connect(xmind, startID, endID);
-            //set new name
+            var startNode = xmind.Topics[0];
+            var endNode = xmind.Topics[1];
+            XmindService.CreateRelationship(xmind, startNode, endNode);
             Guid relID = xmind.GetRelationship()[0].ID;
-            var newStartID = xmind.Topics[2].ID;
-            XmindService.ChangeRelStartNode(xmind, relID, newStartID);
 
-            Assert.Equal(newStartID, xmind.GetRelationship()[0].StartID);
+            var newStartNode = xmind.Topics[2];
+            XmindService.ChangeRelStartNode(xmind, relID, newStartNode);
+
+            Assert.Equal(newStartNode.ID, xmind.GetRelationship()[0].StartID);
+            Assert.Equal(newStartNode, xmind.GetRelationship()[0].StartNode);
         }
 
         [Fact]
         public void Test_ChangeRelEndNode()
         {
             var xmind = GetDefaultXmind();
-            var startID = xmind.Topics[0].ID;
-            var endID = xmind.Topics[1].ID;
-            //create rela
-            XmindService.Connect(xmind, startID, endID);
-            //set new name
+            var startNode = xmind.Topics[0];
+            var endNode = xmind.Topics[1];
+            XmindService.CreateRelationship(xmind, startNode, endNode);
             Guid relID = xmind.GetRelationship()[0].ID;
-            var newEndID = xmind.Topics[2].ID;
-            XmindService.ChangeRelEndNode(xmind, relID, newEndID);
+            var newEndNode = xmind.Topics[2];
+            XmindService.ChangeRelEndNode(xmind, relID, newEndNode);
 
-            Assert.Equal(newEndID, xmind.GetRelationship()[0].EndID);
+            Assert.Equal(newEndNode.ID, xmind.GetRelationship()[0].EndID);
+            Assert.Equal(newEndNode, xmind.GetRelationship()[0].EndNode);
         }
 
         [Fact]
@@ -212,16 +214,16 @@ namespace xmind1_project
         {
             //arrange
             var xmind = GetDefaultXmind();
-            var main_topic_1 = xmind.GetChildren()[0];
-            var parentID = main_topic_1.ID;
-            var number_of_subtopics = 3;
+            var mainTopic = xmind.GetChildren()[0];
+            var parentID = mainTopic.ID;
+            var noSubTopics = 3;
             //act
-            var children = XmindService.GenerateTopics(xmind, parentID, "Sub Topic", number_of_subtopics);
-            XmindService.SetChildForTopic(main_topic_1, children);
+            var children = XmindService.GenerateTopics(xmind, parentID, "Sub Topic", noSubTopics);
+            XmindService.SetChildForTopic(mainTopic, children);
             //count children of subtopic
-            var count = main_topic_1.GetChildren().Count;
+            var count = mainTopic.GetChildren().Count;
             //assert 
-            Assert.Equal(number_of_subtopics, count);
+            Assert.Equal(noSubTopics, count);
         }
 
         [Fact]
@@ -252,7 +254,7 @@ namespace xmind1_project
         {
             var xmind = GetDefaultXmind();
             var sheet = xmind.Sheets[0];
-            Assert.Equal(Constants.SheetTitle, sheet.Title);
+            Assert.Equal(XmindConstants.SheetTitle, sheet.Title);
         }
 
         [Fact]
