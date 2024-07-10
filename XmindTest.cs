@@ -219,6 +219,7 @@ namespace xmind1_project
             var noSubTopics = 3;
             //act
             var children = XmindService.GenerateTopics(xmind, parentID, "Sub Topic", noSubTopics);
+            XmindService.CreateTopic(xmind, "Sub Topic");
             XmindService.SetChildForTopic(mainTopic, children);
             //count children of subtopic
             var count = mainTopic.GetChildren().Count;
