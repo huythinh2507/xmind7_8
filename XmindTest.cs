@@ -214,15 +214,14 @@ namespace xmind1_project
         {
             //arrange
             var xmind = GetDefaultXmind();
-            var mainTopic = xmind.GetChildren()[0];
-            var parentID = mainTopic.ID;
+            var parent = xmind.GetChildren()[0];
+            var parentID = parent.ID;
             var noSubTopics = 3;
             //act
             var children = XmindService.GenerateTopics(xmind, parentID, "Sub Topic", noSubTopics);
-            XmindService.CreateTopic(xmind, "Sub Topic");
-            XmindService.SetChildForTopic(mainTopic, children);
+            XmindService.SetChildForTopic(parent, children);
             //count children of subtopic
-            var count = mainTopic.GetChildren().Count;
+            var count = parent.GetChildren().Count;
             //assert 
             Assert.Equal(noSubTopics, count);
         }
@@ -236,12 +235,9 @@ namespace xmind1_project
             var parent = xmind.GetChildren()[0];
             //get new parent
             var newParent = xmind.GetChildren()[1];
-            var oldparentID = parent.ID;
-            var number_of_subtopics = 3;
-            //generate subtopics
-            var children = XmindService.GenerateTopics(xmind, oldparentID, "Sub Topic", number_of_subtopics);
-            //add newly generated subtopics to old parent
-            XmindService.SetChildForTopic(parent, children);
+
+            XmindService.CreateTopic(parent, "Sub Topic");
+
             //get first child of old parent
             var subject = parent.GetChildren()[0];
             //change parent
